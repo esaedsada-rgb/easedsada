@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NIKKEL — Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black:#0a0a0a;
+    --panel:#141414;
+    --panel-2:#1c1c1c;
+    --line:#2a2a2a;
+    --chrome-1:#f4f4f4;
+    --chrome-2:#c9c9c9;
+    --chrome-3:#8f8f8f;
+    --chrome-4:#5c5c5c;
+    --white:#ffffff;
+    --muted:#9a9a9a;
+    --danger:#e5484d;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--black);color:var(--white);font-family:'Inter',sans-serif;min-height:100vh;}
+  h1,h2,h3,.display{font-family:'Archivo Black',sans-serif;text-transform:uppercase;letter-spacing:0.5px;}
+  a{color:inherit;text-decoration:none;}
+  .chrome-text{
+    background:linear-gradient(180deg,var(--chrome-1) 0%,var(--chrome-3) 45%,var(--chrome-1) 55%,var(--chrome-4) 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .chrome-bar{height:3px;width:100%;background:repeating-linear-gradient(100deg,var(--chrome-4) 0 4px,var(--chrome-1) 4px 8px,var(--chrome-3) 8px 14px,var(--chrome-2) 14px 20px);}
+  header{border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(10,10,10,0.9);backdrop-filter:blur(8px);z-index:20;}
+  .nav{max-width:1200px;margin:0 auto;padding:18px 24px;display:flex;align-items:center;justify-content:space-between;}
+  .logo{font-size:20px;}
+  .nav-right{display:flex;align-items:center;gap:16px;font-size:13px;color:var(--muted);}
+  .nav-right a:hover{color:var(--white);}
+  .logout-btn{background:var(--panel-2);border:1px solid var(--line);color:var(--white);padding:8px 14px;border-radius:2px;cursor:pointer;font-family:inherit;font-size:12px;letter-spacing:1px;text-transform:uppercase;}
+
+  /* Login screen */
+  .login-wrap{min-height:calc(100vh - 60px);display:flex;align-items:center;justify-content:center;padding:20px;}
+  .login-box{background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:36px;width:100%;max-width:380px;}
+  .login-box h2{font-size:20px;margin-bottom:6px;}
+  .login-box p{color:var(--muted);font-size:13px;margin-bottom:24px;}
+  .field{margin-bottom:16px;}
+  .field label{display:block;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+  .field input,.field textarea{width:100%;background:var(--black);border:1px solid var(--line);color:var(--white);padding:10px 12px;border-radius:2px;font-family:inherit;font-size:14px;}
+  .field input:focus,.field textarea:focus{outline:1px solid var(--chrome-2);}
+  .btn-primary{width:100%;padding:12px;border:none;border-radius:2px;cursor:pointer;background:linear-gradient(180deg,var(--chrome-1),var(--chrome-3));color:var(--black);font-weight:700;letter-spacing:0.5px;font-family:inherit;font-size:13px;text-transform:uppercase;}
+  .login-error{color:var(--danger);font-size:12.5px;margin-top:10px;display:none;}
+
+  /* Dashboard */
+  main{max-width:1200px;margin:0 auto;padding:40px 24px 100px;display:none;}
+  .tabs{display:flex;gap:8px;margin-bottom:30px;border-bottom:1px solid var(--line);}
+  .tab-btn{background:none;border:none;color:var(--muted);padding:10px 4px;margin-right:20px;cursor:pointer;font-family:inherit;font-size:13px;letter-spacing:1px;text-transform:uppercase;border-bottom:2px solid transparent;}
+  .tab-btn.active{color:var(--white);border-bottom-color:var(--chrome-2);}
+  .panel{display:none;}
+  .panel.active{display:block;}
+
+  .layout{display:grid;grid-template-columns:340px 1fr;gap:28px;}
+  @media(max-width:820px){.layout{grid-template-columns:1fr;}}
+  .form-card{background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:22px;height:fit-content;}
+  .form-card h3{font-size:15px;margin-bottom:16px;}
+  .img-drop{
+    border:1px dashed var(--line);border-radius:3px;padding:16px;text-align:center;
+    cursor:pointer;color:var(--muted);font-size:12px;margin-bottom:14px;position:relative;overflow:hidden;
+  }
+  .img-drop img{max-width:100%;max-height:120px;display:block;margin:0 auto 8px;border-radius:2px;filter:grayscale(1);}
+  .img-drop input{position:absolute;inset:0;opacity:0;cursor:pointer;}
+
+  .table-wrap{background:var(--panel);border:1px solid var(--line);border-radius:4px;overflow:hidden;}
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  th{text-align:left;padding:12px 16px;background:var(--panel-2);color:var(--muted);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid var(--line);}
+  td{padding:12px 16px;border-bottom:1px solid var(--line);vertical-align:middle;}
+  tr:last-child td{border-bottom:none;}
+  .p-thumb{width:38px;height:38px;object-fit:cover;border-radius:2px;filter:grayscale(1);background:var(--panel-2);}
+  .del-btn{background:none;border:1px solid var(--line);color:var(--danger);padding:6px 10px;border-radius:2px;cursor:pointer;font-size:11px;letter-spacing:0.5px;text-transform:uppercase;}
+  .del-btn:hover{border-color:var(--danger);}
+  .empty-row td{color:var(--muted);text-align:center;padding:30px;}
+  .badge{font-size:10px;letter-spacing:0.5px;text-transform:uppercase;padding:3px 8px;border-radius:20px;border:1px solid var(--line);color:var(--muted);}
+  .order-items{font-size:12px;color:var(--muted);}
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--white);color:var(--black);padding:12px 22px;border-radius:3px;font-size:13px;font-weight:600;opacity:0;transition:all .25s;z-index:200;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <div class="logo display chrome-text">NIKKEL / ADMIN</div>
+    <div class="nav-right">
+      <a href="index.html">View store</a>
+      <button class="logout-btn" id="logoutBtn" style="display:none;">Log out</button>
+    </div>
+  </div>
+  <div class="chrome-bar"></div>
+</header>
+
+<!-- Login -->
+<div class="login-wrap" id="loginWrap">
+  <div class="login-box">
+    <h2>Admin login</h2>
+    <p>Restricted area. Authorized personnel only.</p>
+    <form id="loginForm">
+      <div class="field"><label>Username</label><input type="text" id="loginUser" autocomplete="username" required></div>
+      <div class="field"><label>Password</label><input type="password" id="loginPass" autocomplete="current-password" required></div>
+      <button type="submit" class="btn-primary">Sign in</button>
+      <div class="login-error" id="loginError">Incorrect username or password.</div>
+    </form>
+  </div>
+</div>
+
+<!-- Dashboard -->
+<main id="dashboard">
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="products">Products</button>
+    <button class="tab-btn" data-tab="orders">Orders</button>
+  </div>
+
+  <div class="panel active" id="panel-products">
+    <div class="layout">
+      <div class="form-card">
+        <h3>Add product</h3>
+        <form id="productForm">
+          <div class="img-drop" id="imgDrop">
+            <span id="imgDropLabel">Click to upload image</span>
+            <input type="file" id="prodImage" accept="image/*">
+          </div>
+          <div class="field"><label>Name</label><input type="text" id="prodName" required></div>
+          <div class="field"><label>Price (USD)</label><input type="number" id="prodPrice" min="0" step="0.01" required></div>
+          <div class="field"><label>Stock</label><input type="number" id="prodStock" min="0" step="1" value="10" required></div>
+          <div class="field"><label>Description</label><textarea id="prodDesc" rows="3"></textarea></div>
+          <button type="submit" class="btn-primary">Add product</button>
+        </form>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th></th><th>Name</th><th>Price</th><th>Stock</th><th></th></tr></thead>
+          <tbody id="productTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel" id="panel-orders">
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Order</th><th>Customer</th><th>Items</th><th>Total</th><th>Placed</th></tr></thead>
+        <tbody id="orderTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script src="main.js"></script>
+</body>
+</html>

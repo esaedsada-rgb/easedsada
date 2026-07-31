@@ -102,35 +102,7 @@ function seedProductsIfEmpty() {
   const cats = seededCategories.length ? seededCategories : DB.getCategories();
   const byName = (n) => (cats.find((c) => c.name === n) || {}).id || UNCATEGORIZED;
   DB.saveProducts([
-    {
-      id: makeId(),
-      name: "Aluminium Card Case",
-      price: 42,
-      stock: 14,
-      description: "Brushed-aluminium card holder, machined from a single block.",
-      image: "",
-      categoryId: byName("Accessories"),
-    },
-    {
-      id: makeId(),
-      name: "Steel Desk Sphere",
-      price: 68,
-      stock: 6,
-      description: "A precision-turned steel sphere. Purely for the desk.",
-      image: "",
-      categoryId: byName("Desk"),
-    },
-    {
-      id: makeId(),
-      name: "Mono Wall Clock",
-      price: 95,
-      stock: 9,
-      description: "No numbers, no colour. Just two hands on a chrome face.",
-      image: "",
-      categoryId: byName("Wall"),
-    },
-  ]);
-}
+
 
 // Works even where crypto.randomUUID() is unavailable (e.g. some browsers
 // on a plain file:// page without a secure context).
